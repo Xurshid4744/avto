@@ -1,0 +1,61 @@
+.cars_container {
+  .cars_nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    p {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #2a85ff;
+      border-radius: 12px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      cursor: pointer;
+      &::before {
+        content: "+";
+        padding-right: 10px;
+        font-size: 30px;
+      }
+    }
+  }
+  table {
+    margin-left: -30px;
+    tr {
+      td {
+        text-align: left;
+        padding: 20px 0 0 30px;
+        font-size: 15px;
+        color: #1A1D1F;
+        font-weight: 600;
+      }
+      th {
+        text-align: left;
+        padding: 20px 40px 50px 30px;
+        font-size: 13px;
+        color: #6F767E;
+      }
+    }
+  }
+  .checkboxCars{
+    display: flex;
+    padding-top: 100px;
+    gap: 10px;
+    div{
+      display: grid;
+      input{
+        cursor: pointer;
+      }
+      label{
+        font-size: 12px;
+        margin-top: -10px;
+        cursor: pointer;
+      }
+    }
+  }
+}

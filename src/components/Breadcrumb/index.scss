@@ -1,0 +1,25 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  p {
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+    a {
+      color: #000;
+    }
+    &::after {
+      content: ">";
+      position: relative;
+      left: 5px;
+      top: 2px;
+    }
+    &:last-child::after {
+      display: none;
+    }
+    &:last-child {
+      cursor: text;
+    }
+  }
+}

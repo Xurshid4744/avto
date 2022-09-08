@@ -1,0 +1,25 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  font-family: 'Noto Sans', sans-serif;
+}
+.globalContainer{
+  max-width: 1280px;
+  margin: 0 auto;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track-y {
+  background-color: transparent;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #67a3f1c1;
+  border-radius: 50px;
+  border: 0 solid transparent;
+}
