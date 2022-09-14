@@ -5,13 +5,15 @@ import AdminLayout from "../../Layout/Admin/Admin";
 
 const AdminRouter = () => {
   return (
-    <AdminLayout>
-      <Routes>
-        {routesAdmin.map(({ path, element }) => (
-          <Route path={path} element={element} key={path} />
-        ))}
-      </Routes>
-    </AdminLayout>
+    <>
+      <AdminLayout>
+        <Routes>
+          {routesAdmin.map(({ path, element }) => (
+            <Route path={path} element={element} key={path} />
+          ))}
+        </Routes>
+      </AdminLayout>
+    </>
   );
 };
 

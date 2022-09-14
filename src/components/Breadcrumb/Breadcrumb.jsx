@@ -4,11 +4,13 @@ import "./index.scss";
 const Breadcrumb = ({ data }) => {
   return (
     <div className="breadcrumb">
-      <p><Link to={"/"}>Bosh sahifa</Link></p>
+      <p>
+        <Link to={"/"}>Bosh sahifa</Link>
+      </p>
       {data.map((item) => (
-       <p > <Link to={item.link}>
-       {item.title}
-     </Link></p>
+        <p>
+          <Link to={item.link}>{item.title}</Link>
+        </p>
       ))}
     </div>
   );

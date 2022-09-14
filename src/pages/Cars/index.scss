@@ -23,6 +23,13 @@
         font-size: 30px;
       }
     }
+    .cars_button {
+      display: flex;
+      gap: 20px;
+      img {
+        cursor: pointer;
+      }
+    }
   }
   table {
     margin-left: -30px;
@@ -31,30 +38,41 @@
         text-align: left;
         padding: 20px 0 0 30px;
         font-size: 15px;
-        color: #1A1D1F;
+        color: #1a1d1f;
         font-weight: 600;
       }
       th {
         text-align: left;
         padding: 20px 40px 50px 30px;
         font-size: 13px;
-        color: #6F767E;
+        color: #6f767e;
+      }
+    }
+    .tr {
+      position: relative;
+      .edit {
+        position: absolute;
+        top: 40%;
+        right: -80px;
+        display: flex;
+        gap: 10px;
+        img {
+          width: 20px;
+          cursor: pointer;
+        }
       }
     }
   }
-  .checkboxCars{
+  .checkboxCars {
     display: flex;
+    justify-content: center;
     padding-top: 100px;
     gap: 10px;
-    div{
-      display: grid;
-      input{
-        cursor: pointer;
-      }
-      label{
-        font-size: 12px;
-        margin-top: -10px;
-        cursor: pointer;
+    span {
+      cursor: pointer;
+      padding: 5px;
+      &:focus {
+        font-weight: 700;
       }
     }
   }

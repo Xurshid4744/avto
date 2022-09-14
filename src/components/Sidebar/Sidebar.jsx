@@ -1,10 +1,10 @@
 import React from "react";
 import subtract from "../../assets/icons/subtract.svg";
 import union from "../../assets/icons/union.svg";
-import light from "../../assets/icons/light.svg"; 
+import light from "../../assets/icons/light.svg";
 
-import filled from "../../assets/icons/filled.svg"; 
-import moon from "../../assets/icons/moon.svg"; 
+import filled from "../../assets/icons/filled.svg";
+import moon from "../../assets/icons/moon.svg";
 
 import "./index.scss";
 const Sidebar = () => {
@@ -16,8 +16,8 @@ const Sidebar = () => {
   return (
     <aside>
       <div>
-        {menu.map((item) => (
-          <div className="menu">
+        {menu?.map((item) => (
+          <div className="menu" key={item.title}>
             <img src={item.img} alt="" />
             <p>{item.title}</p>
           </div>

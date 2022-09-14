@@ -1,12 +1,28 @@
-import React, { useEffect, useState } from "react";
-import requestApi from "../../api/requestApi";
+import React, { useState } from "react";
+import { Pagination, message } from "antd";
+
 import AddNewCar from "../../components/AddNewCar/AddNewCar";
 import Modal from "../../components/Modal/Modal";
+import AddNewMarka from "../../components/AddNewMarka/AddNewMarka";
+
+import button from "../../assets/icons/Button.svg";
+import button2 from "../../assets/icons/buttonCarAdd.svg";
+import deletee from "../../assets/icons/delete.svg";
+import edit from "../../assets/icons/edit.svg";
+
+import {
+  useAllCarsQuery,
+  useDeleteCarMutation,
+} from "../../store/endpoints/car";
+
 import "./index.scss";
+
 const Cars = () => {
-  const [data, setData] = useState([]);
-  const [check, setCheck] = useState("63180c53d0953487569045c7");
   const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
+  const [num, setNum] = useState(1);
+  const { data } = useAllCarsQuery({ page: num });
+  const [removId] = useDeleteCarMutation();
   const tableTh = [
     { title: "#" },
     { title: "Markasi" },
@@ -17,38 +33,57 @@ const Cars = () => {
     { title: "Color" },
     { title: "Distance" },
   ];
-  const Checkbox = (e) => {
-    if (e.target.id === "lada") {
-      setCheck("63180c53d0953487569045c7");
-    } else if (e.target.id === "chevrolet") {
-      setCheck("631810ae7ff943f201d4ca7c");
-    } else if (e.target.id === "lambarghini") {
-      setCheck("631810a77ff943f201d4ca77");
-    } else {
-      setCheck("631810a57ff943f201d4ca72");
-    }
-  };
-  useEffect(() => {
-    requestApi.get(`/car?limit=5&page=1&categoryId=${check}`).then((res) => {
-      setData(res?.data?.data?.data);
+
+  const key = "updatable";
+  const openMessage = () => {
+    message.loading({
+      content: "Loading...!",
+      key,
     });
-  }, [check]);
+    setTimeout(() => {
+      message.success({
+        content: "Mashina muvaffaqiyatli ochirildi !",
+        key,
+        duration: 2,
+      });
+    }, 1000);
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+  };
+
+  const Remove = (id) => {
+    removId({ id })
+      .unwrap()
+      .then((res) => {
+        if (res.statusCode === 200) {
+          openMessage();
+        }
+      });
+  };
+  const Edit = () => {
+    alert("Edit function xali mavjud emas !");
+  };
+
   return (
     <>
       <div className="cars_container">
         <div className="cars_nav">
           <p>Mashinalar</p>
-          <button onClick={() => setOpen(true)}>Mashina qo‘shish</button>
+          <div className="cars_button">
+            <img src={button} alt="" onClick={() => setShow(true)} />
+            <img src={button2} alt="" onClick={() => setOpen(true)} />
+          </div>
         </div>
         <div>
           <table>
             <tr>
-              {tableTh.map((item) => (
+              {tableTh?.map((item) => (
                 <th>{item.title}</th>
               ))}
             </tr>
-            {data.map((item, index) => (
-              <tr>
+            {data?.data?.data?.map((item, index) => (
+              <tr className="tr">
                 <>
                   <td>{index + 1}</td>
                   <td>{item.marka.name}</td>
@@ -59,56 +94,29 @@ const Cars = () => {
                   <td>{item.color}</td>
                   <td>{item.distance}</td>
                 </>
+                <div className="edit">
+                  <img src={edit} alt="" onClick={Edit} />
+                  <img src={deletee} alt="" onClick={() => Remove(item._id)} />
+                </div>
               </tr>
             ))}
           </table>
         </div>
         <div className="checkboxCars">
-          <div>
-            <input
-              type="radio"
-              id="lada"
-              name="img"
-              value="lada"
-              onClick={(e) => Checkbox(e)}
-            />
-             <label for="lada">Lada</label>
-          </div>
-           
-          <div>
-            <input
-              type="radio"
-              id="chevrolet"
-              name="img"
-              value="chevrolet"
-              onClick={(e) => Checkbox(e)}
-            />
-             <label for="chevrolet">Chevrolet</label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              id="lambarghini"
-              name="img"
-              value="lambarghini"
-              onClick={(e) => Checkbox(e)}
-            />
-             <label for="lambarghini">Lambarghini</label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              id="ferrari"
-              name="img"
-              value="ferrari"
-              onClick={(e) => Checkbox(e)}
-            />
-             <label for="ferrari">Ferrari</label>
-          </div>
+          <Pagination
+            defaultCurrent={1}
+            current={num}
+            onChange={(e) => setNum(e)}
+            total={data?.data?.total}
+          />
         </div>
-        <p>(All cars yoqligi uchun qo'shib qo'ydim)</p>
       </div>
-      {open && <Modal children={<AddNewCar setOpen={setOpen} />} setOpen={setOpen} />}
+      {open && (
+        <Modal children={<AddNewCar setOpen={setOpen} />} setOpen={setOpen} />
+      )}
+      {show && (
+        <Modal children={<AddNewMarka setOpen={setShow} />} setOpen={setShow} />
+      )}
     </>
   );
 };

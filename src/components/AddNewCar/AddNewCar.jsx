@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { message } from "antd";
+import Progress from "../Progress/Progress";
 import requestApi from "../../api/requestApi";
 import comment from "../../assets/icons/comment.svg";
+import check from "../../assets/icons/check.svg";
+
+import { useCreateCarMutation } from "../../store/endpoints/car";
+import { useCategoryMarkaQuery } from "../../store/endpoints/category";
+import { useUploadMutation } from "../../store/endpoints/upload";
 import "./index.scss";
+
 const AddNewCar = ({ setOpen }) => {
-  const [marka, setMarka] = useState("");
-  const [tanirofka, setTanirofka] = useState("");
+  const [marka, setMarka] = useState("6320ca9b65eb5d15561bc042");
+  const [tanirofka, setTanirofka] = useState("yoq");
   const [motor, setMotor] = useState("");
   const [year, setYear] = useState("");
   const [color, setColor] = useState("");
@@ -15,45 +23,113 @@ const AddNewCar = ({ setOpen }) => {
   const [imgInside, setImgInside] = useState("");
   const [description, setDescription] = useState("");
   const [img, setImg] = useState("");
+  const [progress, setProgress] = useState(false);
+  const [progress2, setProgress2] = useState(false);
+  const [progress3, setProgress3] = useState(false);
+
+  const [check1, setCheck1] = useState(true);
+  const [check2, setCheck2] = useState(true);
+  const [check3, setCheck3] = useState(true);
+
+  const { data } = useCategoryMarkaQuery();
+  const [postCar] = useCreateCarMutation();
+  const [uploadFile] = useUploadMutation();
+  const key = "updatable";
+
+  const openMessage = () => {
+    message.loading({
+      content: "Loading...!",
+      key,
+    });
+    setTimeout(() => {
+      message.success({
+        content: "Mashina muvaffaqiyatli qo'shildi !",
+        key,
+        duration: 2,
+      });
+    }, 1000);
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+  };
 
   const handleChange = (e) => {
-    setImgAutoside(e.target.files[0]);
+    setProgress(true);
+    const form = new FormData();
+    form.append("file", e.target.files[0]);
+    uploadFile({ form })
+      .unwrap()
+      .then((res) => {
+        console.log(res, "llllllllllllll");
+        if (res.statusCode === 200) {
+          setImgAutoside(res?.data);
+          setProgress(false);
+          setCheck1(false);
+        } else {
+          alert("Rasm qo'shishda xatolik bo'ldi!");
+        }
+      });
   };
   const handleChange2 = (e) => {
-    setImgInside(e.target.files[0]);
+    setProgress2(true);
+    const form = new FormData();
+    form.append("file", e.target.files[0]);
+    uploadFile({ form })
+      .unwrap()
+      .then((res) => {
+        if (res.statusCode === 200) {
+          setProgress2(false);
+          setImgInside(res?.data);
+          setCheck2(false);
+        } else {
+          alert("Rasm qo'shishda xatolik bo'ldi!");
+        }
+      });
   };
   const handleChange3 = (e) => {
-    setImg(e.target.files[0]);
+    setProgress3(true);
+    const form = new FormData();
+    form.append("file", e.target.files[0]);
+    uploadFile({ form })
+      .unwrap()
+      .then((res) => {
+        if (res.statusCode === 200) {
+          setProgress3(false);
+          setImg(res?.data);
+          setCheck3(false);
+        } else {
+          alert("Rasm qo'shishda xatolik bo'ldi!");
+        }
+      });
   };
 
   const onSumbit = (e) => {
     e.preventDefault();
-    // requestApi.post("/upload", img).then((res) => {
-    //   if (res.status === 200) {
-
-    //   }
-    // });
-
     const data = {
       imgUrl: img,
-      imgUrlInside: imgInside,
-      imgUrlAutside: imgAutoside,
-      price: price,
-      year: year,
+      imgUrlInside: imgAutoside,
+      imgUrlAutside: imgInside,
+      price: +price,
+      year: +year,
       description: description,
       tonirovka: tanirofka,
       motor: motor,
       color: color,
       distance: distance,
       gearbok: gearbook,
-      categoryId: "63180c53d0953487569045c7",
+      categoryId: marka,
     };
-    requestApi.post("/car", data).then((res) => {
-      if(res.status !== 200){
-        alert(res.message)
+    const post = postCar({ data }).unwrap();
+    post.then((res) => {
+      if (res.statusCode === 200) {
+        setOpen(false);
+        openMessage();
+      } else {
+        alert("Markada xatolik bo'lishi mumkin");
       }
     });
   };
+
   return (
     <section className="addNewCarContainer">
       <div className="newCarHead">
@@ -64,10 +140,9 @@ const AddNewCar = ({ setOpen }) => {
         <div>
           <p>Markasi</p>
           <select id="cars" onChange={(e) => setMarka(e.target.value)}>
-            <option value="lada">LADA</option>
-            <option value="chevrolet">CHEVROLET</option>
-            <option value="lambarghini">LAMBARGHINI</option>
-            <option value="ferrari">FERRARI</option>
+            {data?.data?.data?.map((item) => (
+              <option value={item._id}>{item.name.toUpperCase()}</option>
+            ))}
           </select>
         </div>
         <div>
@@ -80,6 +155,7 @@ const AddNewCar = ({ setOpen }) => {
         <div>
           <p>Motor</p>
           <input
+            required
             type="text"
             placeholder="Kiriting"
             onChange={(e) => setMotor(e.target.value)}
@@ -88,6 +164,7 @@ const AddNewCar = ({ setOpen }) => {
         <div>
           <p>Year</p>
           <input
+            required
             type="text"
             placeholder="Kiriting"
             onChange={(e) => setYear(e.target.value)}
@@ -96,6 +173,7 @@ const AddNewCar = ({ setOpen }) => {
         <div>
           <p>Color</p>
           <input
+            required
             type="text"
             placeholder="Kiriting"
             onChange={(e) => setColor(e.target.value)}
@@ -104,6 +182,7 @@ const AddNewCar = ({ setOpen }) => {
         <div>
           <p>Distance</p>
           <input
+            required
             type="text"
             placeholder="Kiriting"
             onChange={(e) => setDistance(e.target.value)}
@@ -112,6 +191,7 @@ const AddNewCar = ({ setOpen }) => {
         <div>
           <p>Gearbook</p>
           <input
+            required
             type="text"
             placeholder="Kiriting"
             onChange={(e) => setGearbook(e.target.value)}
@@ -120,6 +200,7 @@ const AddNewCar = ({ setOpen }) => {
         <div>
           <p>Narxi</p>
           <input
+            required
             type="text"
             placeholder="Kiriting"
             onChange={(e) => setPrice(e.target.value)}
@@ -127,15 +208,30 @@ const AddNewCar = ({ setOpen }) => {
         </div>
         <div>
           <p>Rasm 360 ichki makon</p>
-          <input onChange={handleChange} type="file" placeholder="Yuklash" />
+          <input
+            required onChange={handleChange} type="file" placeholder="Yuklash" />
+          <img src={check} alt="" hidden={check1} />
+          {progress && (
+            <span className="progresss">
+              <Progress />
+            </span>
+          )}
         </div>
         <div>
           <p>Rasm 360 tashqi makon</p>
-          <input onChange={handleChange2} type="file" placeholder="Yuklash" />
+          <input
+            required onChange={handleChange2} type="file" placeholder="Yuklash" />
+          <img src={check} alt="" hidden={check2} />
+          {progress2 && (
+            <span className="progresss">
+              <Progress />
+            </span>
+          )}
         </div>
         <div>
           <p>Description</p>
           <input
+            required
             type="text"
             placeholder="Mazmuni kiriting"
             className="des"
@@ -145,11 +241,18 @@ const AddNewCar = ({ setOpen }) => {
         <div>
           <p>Model turi uchun rasm</p>
           <input
+            required
             onChange={handleChange3}
             type="file"
             accept=".png,.jpeg,.doc,.jpg"
             placeholder="Yuklash"
           />
+          <img src={check} alt="" hidden={check3} />
+          {progress3 && (
+            <span className="progresss">
+              <Progress />
+            </span>
+          )}
         </div>
         <button>Saqlash</button>
       </form>

@@ -1,13 +1,55 @@
 import React, { useState } from "react";
 import requestApi from "../../api/requestApi";
+import { useDispatch } from "react-redux";
+import { Button, Form, Input, message } from "antd";
+import close from "../../assets/icons/comment.svg";
+
+import { useNavigate } from "react-router-dom";
+import { setChange } from "../../store/slices/changeRouter";
+import { useLoginMutation } from "../../store/endpoints/login";
 import "./index.scss";
 
-const LoginComp = () => {
+const LoginComp = ({ setOpen }) => {
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [postLogin] = useLoginMutation();
 
-  const [singNumber, setSingNumber] = useState("");
-  const [singpassword, setSingPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const key = "updatable";
+
+  const openMessage = () => {
+    message.loading({
+      content: "Loading...!",
+      key,
+    });
+    setTimeout(() => {
+      message.success({
+        content: "Tizimga kirilmoqda !",
+        key,
+        duration: 2,
+      });
+    }, 1000);
+    setTimeout(() => {
+      dispatch(setChange("admin"));
+      navigate("/");
+      window.location.reload();
+    }, 2000);
+  };
+  const openError = () => {
+    message.loading({
+      content: "Loading...!",
+      key,
+    });
+    setTimeout(() => {
+      message.warning({
+        content: "Bunday foydalanuvchi mavjud emas",
+        key,
+        duration: 2,
+      });
+    }, 1000);
+  };
 
   const Login = (e) => {
     e.preventDefault();
@@ -15,73 +57,58 @@ const LoginComp = () => {
       phoneNumber: number,
       password: password,
     };
-    console.log(data, "bu data");
-    requestApi.post("/employee/login", data).then((res) => {
-      if (res.status === 200) {
-        localStorage.setItem("token", res.data?.data?.token);
-        window.location.reload()
+    const creat = postLogin({ data }).unwrap();
+    creat.then((res) => {
+      if (res.statusCode === 200) {
+        localStorage.setItem("token", res.data?.token);
+        openMessage();
+      } else {
+        openError();
       }
     });
   };
 
-  const SingUp = (e) => {
-    e.preventDefault();
-    const data = {
-      phoneNumber: singNumber,
-      password: singpassword,
-    };
-    requestApi.post("/employee/login", data).then((res) => {
-      if (res.status === 200) {
-        localStorage.setItem("token", res.data?.data?.token);
-        window.location.reload()
-      }
-    });
-  };
   return (
-    <div className="main">
-      <input type="checkbox" id="chk" aria-hidden="true" />
-      <div className="signup">
-        <form onSubmit={(e) => Login(e)}>
-          <label for="chk" aria-hidden="true">
-            Login
-          </label>
-          <input
-            type="number"
-            placeholder="Number"
-            required
-            onChange={(e) => setNumber(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button>Login</button>
-        </form>
-      </div>
+    <Form
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      autoComplete="off"
+      className="form"
+    >
+      <h1 className="title">Login</h1>
 
-      <div className="login">
-        <form onSubmit={(e) => SingUp(e)}>
-          <label for="chk" aria-hidden="true">
-            Sign up
-          </label>
-          <input
-            type="number"
-            placeholder="Number"
-            required
-            onChange={(e) => setSingNumber(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            required
-            onChange={(e) => setSingPassword(e.target.value)}
-          />
-          <button> Sign up </button>
-        </form>
-      </div>
-    </div>
+      <Form.Item
+        label="Number"
+        name="name"
+        rules={[{ required: true, message: "Please enter your name!" }]}
+      >
+        <Input
+          type="text"
+          showCount={false}
+          onChange={(e) => setNumber(e.target.value)}
+          required
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Password"
+        name="email"
+        rules={[{ required: true, message: "Please enter your email!" }]}
+      >
+        <Input
+          type="text"
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </Form.Item>
+
+      <Form.Item wrapperCol={{ offset: 10, span: 10 }}>
+        <Button type="primary" ghost={true} onClick={Login}>
+          Kirish
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

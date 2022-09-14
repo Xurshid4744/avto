@@ -1,0 +1,81 @@
+.addNewMarkaContainer {
+    padding: 20px 20px 100px 20px;
+    .newCarHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      h4 {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      img {
+        cursor: pointer;
+      }
+    }
+    form {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: auto auto;
+      position: relative;
+      select {
+        width: 500px;
+        padding: 12px;
+        background-color: #f4f4f4;
+        border-radius: 12px;
+        border: none;
+        outline: none;
+        font-weight: 700;
+      }
+  
+      input {
+        width: 500px;
+        padding: 12px;
+        background-color: #f4f4f4;
+        border-radius: 12px;
+        border: none;
+        outline: none;
+        &::placeholder {
+          color: #9a9fa5;
+          font-size: 14px;
+        }
+        &:nth-child(5) {
+          background-color: red;
+        }
+      }
+      p {
+        font-size: 14px;
+        padding-bottom: 5px;
+        font-weight: 600;
+      }
+      .des {
+        display: flex;
+        align-content: flex-start;
+        width: 500px;
+        padding: 12px;
+        background-color: #f4f4f4;
+        border-radius: 12px;
+        border: none;
+        outline: none;
+        padding-bottom: 150px;
+        &::placeholder {
+          color: #9a9fa5;
+          font-size: 14px;
+        }
+      }
+      button {
+        position: absolute;
+        right: 24px;
+        bottom: -50px;
+        background: #2a85ff;
+        border-radius: 12px;
+        padding: 12px 40px;
+        border: none;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+    }
+  }
+  
